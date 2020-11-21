@@ -1,5 +1,5 @@
 #/bin/bash
-TAGPATTERN="refs/heads/v.*"
+TAGPATTERN="refs/tags/v.*"
 echo $2
 if [[ "$2" =~ $TAGPATTERN ]]; then
   gradle publish -Dtoken=$1
