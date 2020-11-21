@@ -41,4 +41,4 @@ jobs:
 
   - job: releaseJar
     steps:
-      - script: echo 1;echo $(token); echo $BUILD_SOURCEBRANCH; echo $TF_BUILD
+      - script: ./releaseJar.sh $(token) $BUILD_SOURCEBRANCH
