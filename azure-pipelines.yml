@@ -8,26 +8,37 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: Gradle@2
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'build'
+variables:
+  - group: java-gm
 
-- task: GitHubRelease@1
-  inputs:
-    gitHubConnection: 'SamYuan1990 (5)'
-    repositoryName: '$(Build.Repository.Name)'
-    action: 'create'
-    target: '$(Build.SourceVersion)'
-    tagSource: 'gitTag'
-    tagPattern: 'v.*'
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
+jobs:
+  - job: ut
+    steps:
+      - task: Gradle@2
+        inputs:
+          workingDirectory: ''
+          gradleWrapperFile: 'gradlew'
+          gradleOptions: '-Xmx3072m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.8'
+          jdkArchitectureOption: 'x64'
+          publishJUnitResults: true
+          testResultsFiles: '**/TEST-*.xml'
+          tasks: 'build'
+
+  - job: releasePage
+    steps:
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'SamYuan1990 (5)'
+          repositoryName: '$(Build.Repository.Name)'
+          action: 'create'
+          target: '$(Build.SourceVersion)'
+          tagSource: 'gitTag'
+          tagPattern: 'v.*'
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'commitBased'
+
+  - job: releaseJar
+    steps:
+      - script: echo 1;echo $token; echo $BUILD_SOURCEBRANCH; echo $TF_BUILD
